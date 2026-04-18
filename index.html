@@ -124,12 +124,22 @@ enviarDatos(nombre, puntos, tiempo);
 function enviarDatos(nombre, puntos, tiempo){
 
 fetch("https://script.google.com/macros/s/AKfycbxWDLYA1UnofePpp5p2LmCx4ye18du87tQg54oEBK6FGl0WfYSWe5XEttczSyPbGLgW_A/exec", {
-method:"POST",
-body: JSON.stringify({
-nombre: nombre,
-puntos: puntos,
-tiempo: tiempo
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    nombre: nombre,
+    puntos: puntos,
+    tiempo: tiempo
+  })
 })
+.then(response => response.text())
+.then(data => {
+  console.log("Respuesta:", data);
+})
+.catch(error => {
+  console.error("Error:", error);
 });
 
 }
