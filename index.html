@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Quiz Vendedores</title>
+<style>
+body { font-family: Arial; background:#111; color:#fff; text-align:center; }
+.container { max-width:600px; margin:auto; padding:20px; }
+button { padding:10px 20px; margin:10px; cursor:pointer; }
+.hidden { display:none; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎮 Quiz Vendedores</h1>
+
+<div id="start">
+<input type="text" id="nombre" placeholder="Ingresá tu nombre"><br><br>
+<button onclick="iniciar()">Comenzar</button>
+</div>
+
+<div id="quiz" class="hidden">
+<h2 id="pregunta"></h2>
+<div id="opciones"></div>
+<p>⏱ Tiempo: <span id="tiempo">0</span>s</p>
+</div>
+
+<div id="final" class="hidden">
+<h2>Resultado</h2>
+<p id="resultado"></p>
+</div>
+
+</div>
+
+<script>
+
+let preguntas = [
+{p:"¿Qué mejora la velocidad del celular?", o:["Pantalla","RAM","Color","Marca"], r:1},
+{p:"¿Qué es 4K?", o:["Sonido","Resolución","Marca","HDR"], r:1},
+{p:"¿OLED qué tiene mejor?", o:["Brillo","Negros","Sonido","Wifi"], r:1},
+{p:"¿Smart TV?", o:["Más grande","Apps","Barato","Pesado"], r:1},
+{p:"HDR sirve para?", o:["Sonido","Imagen","Wifi","Peso"], r:1},
+{p:"128GB es?", o:["RAM","Almacenamiento","Pantalla","Batería"], r:1},
+{p:"5G es?", o:["Lento","Red rápida","Wifi","Bluetooth"], r:1},
+{p:"Carga frontal ventaja?", o:["Más agua","Menos consumo","Peor lavado","Más ruido"], r:1},
+{p:"Inverter?", o:["Más consumo","Eficiencia","Ruido","Diseño"], r:1},
+{p:"Centrifugado?", o:["Lava","Seca","Calienta","Enjuaga"], r:1},
+{p:"Gas calienta?", o:["Lento","Rápido","Igual","Nada"], r:1},
+{p:"Caloventor?", o:["Gas","Eléctrico portátil","Aire","Heladera"], r:1},
+{p:"Estufa eléctrica?", o:["Difícil","Fácil","Peligrosa","Cara"], r:1},
+{p:"Inducción?", o:["Menos precisa","Más precisa","Igual","Peor"], r:1},
+{p:"Eficiencia A?", o:["Más consumo","Menos consumo","Igual","Peor"], r:1},
+{p:"Gas ventaja?", o:["Caro","Rápido","Malo","Frío"], r:1},
+{p:"TV Samsung usa?", o:["Android","Tizen","webOS","Linux"], r:1},
+{p:"Foto depende?", o:["MP","Procesador","Color","Marca"], r:1},
+{p:"Familia tipo kg?", o:["3","5","8-10","2"], r:2},
+{p:"4K vs Full HD?", o:["Sonido","Resolución","Marca","Peso"], r:1}
+];
+
+let actual = 0;
+let puntos = 0;
+let tiempo = 0;
+let timer;
+
+function iniciar(){
+let nombre = document.getElementById("nombre").value;
+if(nombre==""){ alert("Ingresá nombre"); return;}
+
+document.getElementById("start").classList.add("hidden");
+document.getElementById("quiz").classList.remove("hidden");
+
+timer = setInterval(()=> {
+tiempo++;
+document.getElementById("tiempo").innerText = tiempo;
+},1000);
+
+mostrar();
+}
+
+function mostrar(){
+let q = preguntas[actual];
+document.getElementById("pregunta").innerText = q.p;
+
+let opcionesHTML = "";
+q.o.forEach((op,i)=>{
+opcionesHTML += `<button onclick="responder(${i})">${op}</button><br>`;
+});
+
+document.getElementById("opciones").innerHTML = opcionesHTML;
+}
+
+function responder(i){
+if(i === preguntas[actual].r){ puntos++; }
+
+actual++;
+
+if(actual < preguntas.length){
+mostrar();
+} else {
+finalizar();
+}
+}
+
+function finalizar(){
+clearInterval(timer);
+
+document.getElementById("quiz").classList.add("hidden");
+document.getElementById("final").classList.remove("hidden");
+
+let nombre = document.getElementById("nombre").value;
+
+document.getElementById("resultado").innerHTML =
+`Jugador: ${nombre}<br>
+Puntaje: ${puntos}/20<br>
+Tiempo: ${tiempo} segundos`;
+
+enviarDatos(nombre, puntos, tiempo);
+}
+
+// 🔥 CONECTAR A GOOGLE SHEETS
+function enviarDatos(nombre, puntos, tiempo){
+
+fetch("TU_WEBHOOK_AQUI", {
+method:"POST",
+body: JSON.stringify({
+nombre: nombre,
+puntos: puntos,
+tiempo: tiempo
+})
+});
+
+}
+
+</script>
+
+</body>
+</html>
