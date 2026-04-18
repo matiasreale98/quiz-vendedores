@@ -123,18 +123,28 @@ enviarDatos(nombre, puntos, tiempo);
 // 🔥 CONECTAR A GOOGLE SHEETS
 function enviarDatos(nombre, puntos, tiempo){
 
-fetch("TU_WEBHOOK_AQUI", {
-method:"POST",
-body: JSON.stringify({
-nombre: nombre,
-puntos: puntos,
-tiempo: tiempo
+fetch("https://script.google.com/macros/s/AKfycbwCKxsUb6YCb2KsoPaQi92ws7qRVKUh37MwAyPT-2IFL3lSX5WmRkaoI93nHhb3Rs780Q/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    nombre: nombre,
+    puntos: puntos,
+    tiempo: tiempo
+  })
 })
+.then(response => response.text())
+.then(data => {
+  console.log("Respuesta:", data);
+})
+.catch(error => {
+  console.error("Error:", error);
 });
 
 }
 
 </script>
 
-</body>
+</body> 
 </html>
